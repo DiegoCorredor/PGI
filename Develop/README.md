@@ -19,6 +19,8 @@ Descripción corta del proyecto.
 ## Uso
 
 Explicación breve de cómo usar el proyecto y las funcionalidades que ofrece.
+Link de acceso: https://galash.000webhostapp.com/
+Contraseña del host: 6AzkmyGkBjvEb1XJr&Qr
 
 ## Contribuir
 

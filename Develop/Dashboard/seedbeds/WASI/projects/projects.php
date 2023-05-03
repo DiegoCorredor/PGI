@@ -1,11 +1,10 @@
 <?php
 session_start();
 if (!isset($_SESSION['dniUser'])) {
-    header("Location: index.php");
+    header("Location: ../../../index.php");
 }
 $nombre = $_SESSION['name'];
 $tipo_usuario = $_SESSION['rolUser'];
-$photoUser = $_SESSION['photoUser'];
 ?>
 
 <!DOCTYPE html>
@@ -19,17 +18,17 @@ $photoUser = $_SESSION['photoUser'];
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <link rel="icon" href="../images/logo.png">
-    <title>Galash :: Dashboard</title>
+    <link rel="icon" href="../../../../images/log.png">
+    <title>Galash :: WASI</title>
 
     <!-- Custom fonts for this template-->
-    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="../../../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
 
     <!-- Custom styles for this template-->
-    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="../../../css/sb-admin-2.min.css" rel="stylesheet">
 
 </head>
 
@@ -44,7 +43,7 @@ $photoUser = $_SESSION['photoUser'];
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="./dashboard.php">
                 <div class="sidebar-brand-icon rotate-n-15">
-                    <img src="../images/logo.png" class="" width="50px" alt=""></a>
+                    <img src="../../../../images/log.png" class="" width="50px" alt=""></a>
                 </div>
                 <div class="h6 font-weight-bold text-center mx-3">Dashboard</div>
             </a>
@@ -53,8 +52,8 @@ $photoUser = $_SESSION['photoUser'];
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item active">
-                <a class="nav-link" href="dashboard.php">
+            <li class="nav-item">
+                <a class="nav-link" href="../../../dashboard.php">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Página principal</span></a>
             </li>
@@ -69,20 +68,65 @@ $photoUser = $_SESSION['photoUser'];
             </div>
 
             <!-- Nav Item - Pages Collapse Menu -->
-            <li class="nav-item">
+            <li class="nav-item active">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
                     aria-expanded="true" aria-controls="collapseTwo">
                     <i class="fas fa-fw fa-cog"></i>
                     <span>Semilleros</span>
                 </a>
                 <?php
-                require 'conn.php';
-                require_once './controller/loadSeedbeds.php';
-                loadSeedbods($mysqli);
-                require_once './controller/viewManUsers.php';
-                viewMenu($tipo_usuario);
+                require '../../../conn.php';
+                $query = "SELECT * FROM seedbeds";
+                $query2 = "SELECT alias FROM seedbeds";
+                $result = mysqli_query($mysqli, $query);
+                $result2 = mysqli_query($mysqli, $query2);
+                $i = 0;
+                foreach ($result as $row) {
+                    $i++;
+                    echo "<div id='collapseTwo' class='collapse' aria-labelledby='headingTwo' data-parent='#accordionSidebar'>
+                            <a class='nav-link collapsed' href='#' data-toggle='collapse' data-target='#collapseThree'
+                                aria-expanded='true' aria-controls='collapseThree'>
+                                <i class='fas fa-fw fa-cog'></i>
+                                <span>" . $row['seedbed'] . "</span>
+                            </a>
+                            <div id='collapseThree' class='collapse' aria-labelledby='headingThree' data-parent='#collapseTwo'>
+                                <div class='bg-white py-2 collapse-inner rounded'>
+                                <a class='collapse-item' href='../../../seedbeds/".$row['alias']."/info/info.php'><i class='fas fa-fw fa-info'></i>  -  Información</a>
+                                <a class='collapse-item' href='../../../seedbeds/".$row['alias']."/members/users.php'><i class='fas fa-fw fa-user'></i>  -  Integrantes</a>
+                                <a class='collapse-item' href='../../../seedbeds/".$row['alias']."/projects/projects.php'><i class='fas fa-fw fa-folder'></i>  -  Proyectos</a>
+                                </div>
+                            </div>
+                        </div>";
+                }
+                mysqli_close($mysqli);
                 ?>
             </li>
+            <?php 
+                if($tipo_usuario == 3 || $tipo_usuario == 4){
+                    echo "<!-- Divider -->
+                        <hr class='sidebar-divider'>
+
+                        <!-- Heading -->
+                        <div class='sidebar-heading'>
+                            Gestión de usuarios
+                        </div>
+
+                        <!-- Nav Item - Pages Collapse Menu -->
+                        <li class='nav-item'>
+                            <a class='nav-link' href='#' data-toggle='collapse' data-target='#collapsePages' aria-expanded='false'
+                                aria-controls='collapsePages'>
+                                <i class='fas fa-fw fa-users'></i>
+                                <span>Acceso</span>
+                            </a>
+                            <div id='collapsePages' class='collapse' aria-labelledby='headingPages' data-parent='#accordionSidebar'>
+                                <div class='bg-white py-2 collapse-inner rounded'>
+                                    <a class='collapse-item' href='#'>Usuarios</a>
+                                    <a class='collapse-item' href='#'>Servicios</a>
+                                </div>
+                            </div>
+                        </li>";
+                }
+            ?>
 
             <hr class="sidebar-divider">
 
@@ -98,7 +142,7 @@ $photoUser = $_SESSION['photoUser'];
                 </a>
                 <div id="collapseOther" class="collapse" aria-labelledby="headingOther" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <a class="collapse-item" href="./help.php">Ayuda</a>
+                        <a class="collapse-item" href="../../../help.php">Ayuda</a>
                     </div>
                 </div>
             </li>
@@ -176,12 +220,16 @@ $photoUser = $_SESSION['photoUser'];
                                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">
                                     <?php echo $nombre; ?>
                                 </span>
-                                <img class="img-profile rounded-circle" src="./img/profiles/<?php echo $photoUser; ?>">
+                                <img class="img-profile rounded-circle" src="../../../img/undraw_profile_3.svg">
                             </a>
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="userDropdown">
-                                <a class="dropdown-item" href="./help.php">
+                                <a class="dropdown-item" href="#">
+                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    Editar perfil
+                                </a>
+                                <a class="dropdown-item" href="../../../help.php">
                                     <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
                                     Servicio de ayuda
                                 </a>
@@ -202,65 +250,33 @@ $photoUser = $_SESSION['photoUser'];
                 <div class="container-fluid">
 
                     <!-- Page Heading -->
-                    <h1 class="h3 mb-1 text-gray-800">Dashboard de <?php echo $nombre; ?></h1>
-                    <p>Bienvenid@ de nuevo, que gusto verte. ¿Qué deseas hacer hoy?</p>
+                    <h1 class="h3 mb-4 text-gray-800">Semillero de investigación en accesibilidad web - WASI</h1>
                     <hr>
-                    <div id="carouselExampleSlidesOnly" class="carousel slide" data-ride="carousel">
-                        <div class="carousel-inner">
-                            <div class="carousel-item active">
-                                <img src="../images/uptcsogamoso.jpg" class="d-block w-100" alt="...">
-                            </div>
-                            <div class="carousel-item">
-                                <img src="../images/uptcsogamoso.jpg" class="d-block w-100" alt="...">
-                            </div>
-                            <div class="carousel-item">
-                                <img src="../images/uptcsogamoso.jpg" class="d-block w-100" alt="...">
-                            </div>
+                    <div class="row justify-content-center">
+                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 bg-white rounded mb-4 pl-4 mx-2">
+                            <p class="h2 text-gray-800 pt-3">Proyectos del semillero</p><hr>
+                            <table class="table table-hover ">
+                                <thead class="thead-dark text-center">
+                                    <tr>
+                                        <th scope="col">Código</th>
+                                        <th scope="col">Titulo</th>
+                                        <th scope="col">Fecha de inicio</th>
+                                        <th scope="col">Linea de investigación</th>
+                                        <th scope="col">Palabras clave</th>
+                                        <th scope="col">Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                <?php
+                                    require '../../../conn.php';
+                                    require_once '../../../controller/viewProjects.php';
+                                    viewProject($mysqli,1);
+                                ?>
+                                </tbody>
+                            </table>
+
                         </div>
-                    </div>
-                    <div class="card mt-2">
-                        <div class="card-body">
-                            <h5 class="card-title">Señores estudiantes</h5>
-                            <p class="card-text">Señores estudiantes, esta página web es de uso exclusivo de los miembros registrados de los semilleros de la UPTC Seccional Sogamoso, por favor haga buen uso de la información.</p>
-                        </div>
-                    </div>
-                    <br>
-                    <div class="card">
-                        <div class="card-body">
-                            <h2 class="card-title">Noticias</h2><hr>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="card">
-                                        <img src="https://images.pexels.com/photos/941555/pexels-photo-941555.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" class="card-img-top" alt="...">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Noticia 1</h5>
-                                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                                            <a href="#" class="btn btn-primary">Ver el articulo</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="card">
-                                        <img src="https://images.pexels.com/photos/669621/pexels-photo-669621.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" class="card-img-top" alt="...">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Noticia 2</h5>
-                                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                                            <a href="#" class="btn btn-primary">Ver el articulo</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="card">
-                                        <img src="https://images.pexels.com/photos/1181307/pexels-photo-1181307.jpeg?auto=compress&cs=tinysrgb&w=1600" class="card-img-top" alt="...">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Noticia 3</h5>
-                                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                                            <a href="#" class="btn btn-primary">Ver el articulo </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div>
                     <!-- Content Row -->
 
@@ -276,7 +292,7 @@ $photoUser = $_SESSION['photoUser'];
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
-                        <img src="../images/uptc_logo_full.jpg" class="text-center" width="300px" alt=""><br>
+                        <img src="../../../../images/uptc_logo_full.jpg" class="text-center" width="300px" alt=""><br>
                         <span>Copyright &copy; G.A.L.A.S.H. - UPTC Seccional Sogamoso <br>2023</span>
                     </div>
                 </div>
@@ -310,21 +326,21 @@ $photoUser = $_SESSION['photoUser'];
                     </strong> selecicona por favor "Salir" para terminar la sesión.</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
-                    <a class="btn btn-danger" href="./logout.php">Salir</a>
+                    <a class="btn btn-danger" href="../../../logout.php">Salir</a>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Bootstrap core JavaScript-->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="../../../vendor/jquery/jquery.min.js"></script>
+    <script src="../../../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
     <!-- Core plugin JavaScript-->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    <script src="../../../vendor/jquery-easing/jquery.easing.min.js"></script>
 
     <!-- Custom scripts for all pages-->
-    <script src="js/sb-admin-2.min.js"></script>
+    <script src="../../../js/sb-admin-2.min.js"></script>
 
 </body>
 

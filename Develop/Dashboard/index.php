@@ -4,7 +4,7 @@
 	if($_POST){
 		$usuario = $_POST['member-login-number'];
 		$password = $_POST['member-login-password'];
-		$sql = "SELECT dniUser, passwordUser, firstName FROM users WHERE dniUser='$usuario'";
+		$sql = "SELECT dniUser, passwordUser, firstName, rolUser, photoUser FROM users WHERE dniUser='$usuario'";
 		$resultado = $mysqli->query($sql);
 		$num = $resultado->num_rows;
 		if($num>0){
@@ -18,6 +18,7 @@
 				$_SESSION['dniUser'] = $row['dniUser'];
 				$_SESSION['name'] = $row['firstName'];
 				$_SESSION['rolUser'] = $row['rolUser'];
+				$_SESSION['photoUser'] = $row['photoUser'];
 				
 				header("Location: dashboard.php");
 			} else {
